@@ -489,3 +489,74 @@ function downloadProteinFASTA() {
 
     downloadFile("protein_translation.fasta", proteinFasta, "text/plain");
 }
+
+let latestMutationData = null;
+
+async function runMutationComparison() {
+    const reference = document.getElementById('reference-input').value.trim();
+    const sample = document.getElementById('sample-input').value.trim();
+
+    if (!reference || !sample) {
+        alert("Please enter both a reference sequence and a sample sequence.");
+        return;
+    }
+
+    try {
+        const response = await fetch('/compare', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                reference: reference,
+                sample: sample
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            alert(data.error);
+            return;
+        }
+
+        latestMutationData = data;
+        displayMutationResults(data);
+
+    } catch (error) {
+        alert("Something went wrong while comparing sequences.");
+        console.error(error);
+    }
+}
+
+function displayMutationResults(data) {
+    const mutationBadge = document.getElementById('mutation-badge');
+    const tableBody = document.getElementById('mutation-table-body');
+
+    mutationBadge.textContent = data.mutation_count + " variants";
+
+    document.getElementById('cnt-mut').textContent =
+        data.mutation_count;
+
+    tableBody.innerHTML = "";
+
+    if (data.mutations.length > 0) {
+        data.mutations.forEach((mutation, index) => {
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${mutation.position}</td>
+                    <td>${mutation.reference_base}</td>
+                    <td>${mutation.sample_base}</td>
+                    <td>${mutation.type}</td>
+                </tr>
+            `;
+        });
+    } else {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="5">No mutations detected between these sequences.</td>
+            </tr>
+        `;
+    }
+}

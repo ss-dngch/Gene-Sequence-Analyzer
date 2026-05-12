@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Gene Sequence Analyzer</title>
+
     <link
         href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap"
         rel="stylesheet" />
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    </head>
-
 </head>
 
 <body>
@@ -21,156 +21,303 @@
     <div class="wrap">
 
         <!-- Header -->
+
         <header>
+
             <div class="eyebrow">
                 <span class="eyebrow-dot"></span>
                 Bioinformatics Toolkit v2.0
             </div>
-            <h1>Gene Sequence<br>Analyzer</h1>
-            <p class="subtitle">DNA sequence analysis, mutation detection, ORF discovery, and genomic insights — built
-                for the lab and the classroom.</p>
+
+            <h1>
+                Gene Sequence<br>Analyzer
+            </h1>
+
+            <p class="subtitle">
+                DNA sequence analysis, mutation detection,
+                ORF discovery, and genomic insights —
+                built for the lab and the classroom.
+            </p>
+
         </header>
 
-        <!-- Stats bar -->
+        <!-- Stats -->
+
         <div class="stats-bar">
+
             <div class="stat-item">
                 <span class="stat-num" id="cnt-bases">—</span>
                 <span class="stat-label">Bases loaded</span>
             </div>
+
             <div class="stat-item">
                 <span class="stat-num" id="cnt-gc">—</span>
                 <span class="stat-label">GC content</span>
             </div>
+
             <div class="stat-item">
                 <span class="stat-num" id="cnt-orfs">—</span>
                 <span class="stat-label">ORFs found</span>
             </div>
+
             <div class="stat-item">
                 <span class="stat-num" id="cnt-mut">—</span>
                 <span class="stat-label">Variants detected</span>
             </div>
+
         </div>
 
-        <!-- Upload panel -->
-        <div class="upload-panel">
-            <div class="panel-label">// input sequence</div>
+        <!-- Upload Panel -->
 
-            <div class="upload-area" id="drop-zone">
-                <input type="file" id="fasta-input" accept=".fasta,.fa,.fna,.txt" />
-                <div class="upload-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="17 8 12 3 7 8" />
-                        <line x1="12" y1="3" x2="12" y2="15" />
-                    </svg>
-                </div>
-                <div class="upload-main-text">Drop FASTA file here or click to browse</div>
-                <div class="upload-sub-text">.fasta · .fa · .fna · .txt</div>
-                <div class="file-name" id="file-name-display"></div>
+        <div class="upload-panel">
+
+            <div class="panel-label">
+                // input sequence
             </div>
 
-            <div class="seq-divider">or paste sequence directly</div>
+            <div class="upload-area" id="drop-zone">
+
+                <input type="file" id="fasta-input" accept=".fasta,.fa,.fna,.txt" />
+
+                <div class="upload-icon">
+
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+
+                        <polyline points="17 8 12 3 7 8" />
+
+                        <line x1="12" y1="3" x2="12" y2="15" />
+
+                    </svg>
+
+                </div>
+
+                <div class="upload-main-text">
+                    Drop FASTA file here or click to browse
+                </div>
+
+                <div class="upload-sub-text">
+                    .fasta · .fa · .fna · .txt
+                </div>
+
+                <div class="file-name" id="file-name-display"></div>
+
+            </div>
+
+            <div class="seq-divider">
+                or paste sequence directly
+            </div>
 
             <textarea id="seq-input"
                 placeholder=">sequence_id&#10;ATGCGTACGTAGCTAGCTAGCTAGCTAGCTAGCTATCGATCGATCG..."></textarea>
 
             <button class="btn-analyze" id="analyze-btn" onclick="runAnalysis()">
+
                 <div class="btn-inner">
+
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                         stroke-linecap="round" stroke-linejoin="round">
+
                         <circle cx="11" cy="11" r="8" />
+
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
+
                     </svg>
+
                     Analyze Sequence
+
                 </div>
+
             </button>
 
             <div class="progress-wrap" id="progress-wrap">
+
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="progress-bar"></div>
                 </div>
+
                 <div class="progress-label">
-                    <span id="progress-step">Initializing pipeline…</span>
-                    <span id="progress-pct">0%</span>
+
+                    <span id="progress-step">
+                        Initializing pipeline…
+                    </span>
+
+                    <span id="progress-pct">
+                        0%
+                    </span>
+
                 </div>
+
             </div>
+
         </div>
 
-        <!-- Results panel -->
+        <!-- Results -->
+
         <div class="results-panel" id="results-panel">
+
             <div class="results-header">
-                <span class="results-title">Analysis complete</span>
-                <span class="results-badge">✓ PIPELINE OK</span>
+
+                <span class="results-title">
+                    Analysis complete
+                </span>
+
+                <span class="results-badge">
+                    ✓ PIPELINE OK
+                </span>
+
             </div>
+
             <div class="metrics-row">
+
                 <div class="metric-box">
                     <span class="metric-val" id="res-len">—</span>
                     <div class="metric-key">Sequence length</div>
                 </div>
+
                 <div class="metric-box">
                     <span class="metric-val" id="res-gc">—</span>
                     <div class="metric-key">GC content</div>
                 </div>
+
                 <div class="metric-box">
                     <span class="metric-val" id="res-orf">—</span>
                     <div class="metric-key">ORFs (ATG→stop)</div>
                 </div>
+
                 <div class="metric-box">
                     <span class="metric-val" id="res-at">—</span>
                     <div class="metric-key">AT / GC ratio</div>
                 </div>
+
             </div>
-            <div class="panel-label" style="margin-bottom:12px">// colorized sequence (A G C T)</div>
+
+            <div class="panel-label" style="margin-bottom:12px">
+
+                // colorized sequence (A G C T)
+
+            </div>
+
             <div class="seq-display" id="seq-display"></div>
+
         </div>
 
+        <!-- Details Grid -->
+
         <div class="details-grid" id="details-grid">
-        
+
+            <!-- Sequence Summary -->
+
             <div class="detail-card">
+
                 <div class="detail-header">
                     <h3>Sequence Summary</h3>
                 </div>
+
                 <div class="summary-table">
-                    <div><span>Sequence ID</span><span id="sum-id">—</span></div>
-                    <div><span>Length</span><span id="sum-length">—</span></div>
-                    <div><span>GC Content</span><span id="sum-gc">—</span></div>
-                    <div><span>AT Content</span><span id="sum-at">—</span></div>
+
+                    <div>
+                        <span>Sequence ID</span>
+                        <span id="sum-id">—</span>
+                    </div>
+
+                    <div>
+                        <span>Length</span>
+                        <span id="sum-length">—</span>
+                    </div>
+
+                    <div>
+                        <span>GC Content</span>
+                        <span id="sum-gc">—</span>
+                    </div>
+
+                    <div>
+                        <span>AT Content</span>
+                        <span id="sum-at">—</span>
+                    </div>
+
                 </div>
+
             </div>
-        
+
+            <!-- Reverse Complement -->
+
             <div class="detail-card">
+
                 <div class="detail-header">
+
                     <h3>Reverse Complement</h3>
-                    <button class="copy-btn" onclick="copyText('reverse-output')">Copy</button>
+
+                    <button class="copy-btn" onclick="copyText('reverse-output')">
+
+                        Copy
+                    </button>
+
                 </div>
+
                 <pre id="reverse-output" class="sequence-box">—</pre>
+
             </div>
-        
+
+            <!-- RNA -->
+
             <div class="detail-card">
+
                 <div class="detail-header">
+
                     <h3>RNA Transcript</h3>
-                    <button class="copy-btn" onclick="copyText('rna-output')">Copy</button>
+
+                    <button class="copy-btn" onclick="copyText('rna-output')">
+
+                        Copy
+                    </button>
+
                 </div>
+
                 <pre id="rna-output" class="sequence-box">—</pre>
+
             </div>
-        
+
+            <!-- Protein -->
+
             <div class="detail-card">
+
                 <div class="detail-header">
+
                     <h3>Protein Translation</h3>
-                    <button class="copy-btn" onclick="copyText('protein-output')">Copy</button>
+
+                    <button class="copy-btn" onclick="copyText('protein-output')">
+
+                        Copy
+                    </button>
+
                 </div>
+
                 <pre id="protein-output" class="sequence-box">—</pre>
+
             </div>
-        
+
+            <!-- ORF -->
+
             <div class="detail-card full-card">
+
                 <div class="detail-header">
+
                     <h3>ORF Table</h3>
-                    <span id="orf-badge" class="mini-badge">0 ORFs</span>
+
+                    <span id="orf-badge" class="mini-badge">
+
+                        0 ORFs
+                    </span>
+
                 </div>
-        
+
                 <table class="orf-table">
+
                     <thead>
+
                         <tr>
                             <th>#</th>
                             <th>Start</th>
@@ -178,76 +325,238 @@
                             <th>Length</th>
                             <th>Sequence</th>
                         </tr>
+
                     </thead>
+
                     <tbody id="orf-table-body">
+
                         <tr>
-                            <td colspan="5">No ORFs detected yet.</td>
+                            <td colspan="5">
+                                No ORFs detected yet.
+                            </td>
                         </tr>
+
                     </tbody>
+
                 </table>
 
-            <div class="detail-card full-card">
-                <div class="detail-header">
-                    <h3>Download & Export</h3>
-                </div>
-            
-                <div class="export-grid">
-                    <button class="export-btn" onclick="downloadJSON()">
-                        Download JSON Report
-                    </button>
-            
-                    <button class="export-btn" onclick="downloadFASTA()">
-                        Download FASTA
-                    </button>
-            
-                    <button class="export-btn" onclick="downloadProteinFASTA()">
-                        Download Protein FASTA
-                    </button>
-                </div>
             </div>
 
+            <!-- Mutation Comparison -->
+
+            <div class="detail-card full-card mutation-card">
+
+                <div class="detail-header">
+
+                    <h3>Mutation Comparison</h3>
+
+                    <span class="mini-badge" id="mutation-badge">
+
+                        0 variants
+                    </span>
+
+                </div>
+
+                <p class="mutation-help">
+
+                    Compare a reference DNA sequence against
+                    a sample sequence to detect SNPs,
+                    insertions, and deletions.
+
+                </p>
+
+                <div class="mutation-input-grid">
+
+                    <div>
+
+                        <label class="mutation-label">
+                            Reference Sequence
+                        </label>
+
+                        <textarea id="reference-input"
+                            placeholder=">reference&#10;ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG"></textarea>
+
+                    </div>
+
+                    <div>
+
+                        <label class="mutation-label">
+                            Sample Sequence
+                        </label>
+
+                        <textarea id="sample-input"
+                            placeholder=">sample&#10;ATGGCCATTGTAATGAGCCGCTGAAAGGGTGCCCAATAG"></textarea>
+
+                    </div>
+
+                </div>
+
+                <button class="export-btn compare-btn" onclick="runMutationComparison()">
+
+                    Compare Sequences
+
+                </button>
+
+                <table class="orf-table mutation-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th>Position</th>
+                            <th>Reference</th>
+                            <th>Sample</th>
+                            <th>Type</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="mutation-table-body">
+
+                        <tr>
+                            <td colspan="5">
+                                No comparison run yet.
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
             </div>
-        
+
+            <!-- Export -->
+
+            <div class="detail-card full-card export-card">
+
+                <div class="detail-header">
+
+                    <h3>Download & Export</h3>
+
+                </div>
+
+                <div class="export-grid">
+
+                    <button class="export-btn" onclick="downloadJSON()">
+
+                        Download JSON Report
+
+                    </button>
+
+                    <button class="export-btn" onclick="downloadFASTA()">
+
+                        Download FASTA
+
+                    </button>
+
+                    <button class="export-btn" onclick="downloadProteinFASTA()">
+
+                        Download Protein FASTA
+
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <!-- Feature cards -->
-        <div class="section-heading" style="margin-top:48px">// analysis modules</div>
+        <!-- Feature Cards -->
+
+        <div class="section-heading" style="margin-top:48px">
+
+            // analysis modules
+
+        </div>
+
         <div class="feature-grid">
 
             <div class="feature-card c-teal">
+
                 <span class="card-arrow">↗</span>
+
                 <div class="card-icon">🧬</div>
-                <div class="card-tag">Module 01</div>
-                <div class="card-title">Sequence Statistics</div>
-                <div class="card-desc">GC content, nucleotide composition, length distribution, and Shannon entropy for
-                    sequence complexity scoring.</div>
+
+                <div class="card-tag">
+                    Module 01
+                </div>
+
+                <div class="card-title">
+                    Sequence Statistics
+                </div>
+
+                <div class="card-desc">
+                    GC content, nucleotide composition,
+                    length distribution, and Shannon entropy
+                    for sequence complexity scoring.
+                </div>
+
             </div>
 
             <div class="feature-card c-cyan">
+
                 <span class="card-arrow">↗</span>
+
                 <div class="card-icon">⚡</div>
-                <div class="card-tag">Module 02</div>
-                <div class="card-title">Mutation Detection</div>
-                <div class="card-desc">Detect SNPs, insertions, and deletions via pairwise alignment. Outputs
-                    position-annotated variant tables.</div>
+
+                <div class="card-tag">
+                    Module 02
+                </div>
+
+                <div class="card-title">
+                    Mutation Detection
+                </div>
+
+                <div class="card-desc">
+                    Detect SNPs, insertions, and deletions
+                    via pairwise alignment.
+                    Outputs position-annotated variant tables.
+                </div>
+
             </div>
 
             <div class="feature-card c-green">
+
                 <span class="card-arrow">↗</span>
+
                 <div class="card-icon">🔍</div>
-                <div class="card-tag">Module 03</div>
-                <div class="card-title">ORF Finder</div>
-                <div class="card-desc">Identify open reading frames across all 6 reading frames. Highlight ATG start
-                    codons and stop codon positions.</div>
+
+                <div class="card-tag">
+                    Module 03
+                </div>
+
+                <div class="card-title">
+                    ORF Finder
+                </div>
+
+                <div class="card-desc">
+                    Identify open reading frames across
+                    all 6 reading frames.
+                    Highlight ATG start codons and stop codon positions.
+                </div>
+
             </div>
 
             <div class="feature-card c-amber">
+
                 <span class="card-arrow">↗</span>
+
                 <div class="card-icon">🔬</div>
-                <div class="card-tag">Module 04</div>
-                <div class="card-title">Protein Translation</div>
-                <div class="card-desc">Translate DNA to amino acid chains using standard codon tables. Export in FASTA
-                    or single-letter notation.</div>
+
+                <div class="card-tag">
+                    Module 04
+                </div>
+
+                <div class="card-title">
+                    Protein Translation
+                </div>
+
+                <div class="card-desc">
+                    Translate DNA to amino acid chains
+                    using standard codon tables.
+                    Export in FASTA or single-letter notation.
+                </div>
+
             </div>
 
         </div>

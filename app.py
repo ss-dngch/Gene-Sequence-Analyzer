@@ -10,6 +10,7 @@ from pipeline.sequence_tools import (
     translate_sequence,
 )
 from pipeline.orf_finder import find_orfs
+from pipeline.mutations import detect_mutations
 
 app = Flask(__name__)
 
@@ -64,6 +65,51 @@ def analyze():
                 "reverse_complement": rev_comp,
                 "rna": rna,
                 "protein": protein,
+            }
+        )
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+
+@app.route("/compare", methods=["POST"])
+def compare():
+    data = request.get_json()
+
+    reference_text = data.get("reference", "")
+    sample_text = data.get("sample", "")
+
+    try:
+        reference_records = list(SeqIO.parse(StringIO(reference_text), "fasta"))
+        sample_records = list(SeqIO.parse(StringIO(sample_text), "fasta"))
+
+        if reference_records:
+            reference_sequence = str(reference_records[0].seq).upper()
+        else:
+            reference_sequence = (
+                reference_text.replace("\n", "").replace(" ", "").upper()
+            )
+
+        if sample_records:
+            sample_sequence = str(sample_records[0].seq).upper()
+        else:
+            sample_sequence = sample_text.replace("\n", "").replace(" ", "").upper()
+
+        if not validate_sequence(reference_sequence):
+            return jsonify({"success": False, "error": "Invalid reference sequence."})
+
+        if not validate_sequence(sample_sequence):
+            return jsonify({"success": False, "error": "Invalid sample sequence."})
+
+        mutations = detect_mutations(reference_sequence, sample_sequence)
+
+        return jsonify(
+            {
+                "success": True,
+                "reference_length": len(reference_sequence),
+                "sample_length": len(sample_sequence),
+                "mutation_count": len(mutations),
+                "mutations": mutations,
             }
         )
 
