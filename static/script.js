@@ -5,6 +5,8 @@ const ctx = canvas.getContext('2d');
 
 let W, H, t = 0;
 
+let latestAnalysisData = null;
+
 function resize() {
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
@@ -257,6 +259,7 @@ async function runAnalysis() {
 /* ── Display backend results ── */
 
 function showBackendResults(data) {
+    latestAnalysisData = data;
 
     const seq = data.sequence;
     const stats = data.stats;
@@ -439,4 +442,50 @@ function shakeBtn() {
     setTimeout(() => {
         btn.style.transform = '';
     }, 240);
+}
+
+function downloadFile(filename, content, type = "text/plain") {
+    const blob = new Blob([content], { type: type });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+function downloadJSON() {
+    if (!latestAnalysisData) {
+        alert("Run an analysis first.");
+        return;
+    }
+
+    const json = JSON.stringify(latestAnalysisData, null, 2);
+    downloadFile("gene_sequence_analysis_report.json", json, "application/json");
+}
+
+function downloadFASTA() {
+    if (!latestAnalysisData) {
+        alert("Run an analysis first.");
+        return;
+    }
+
+    const fasta =
+        `>${latestAnalysisData.sequence_id}\n${latestAnalysisData.sequence}\n`;
+
+    downloadFile("analyzed_sequence.fasta", fasta, "text/plain");
+}
+
+function downloadProteinFASTA() {
+    if (!latestAnalysisData) {
+        alert("Run an analysis first.");
+        return;
+    }
+
+    const proteinFasta =
+        `>${latestAnalysisData.sequence_id}_protein_translation\n${latestAnalysisData.protein}\n`;
+
+    downloadFile("protein_translation.fasta", proteinFasta, "text/plain");
 }
