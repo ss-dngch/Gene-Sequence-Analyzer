@@ -14,7 +14,7 @@ https://gene-analyzer.up.railway.app/
 
 ### Mutation Comparison
 
-![Mutation Comparison](images/Screenshot2.png)
+![Mutation Comparison](images/Screenshot2-fixed.png)
 
 ## Features
 
