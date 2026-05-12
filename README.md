@@ -6,6 +6,16 @@ Interactive bioinformatics platform for DNA sequence analysis, mutation detectio
 
 https://gene-analyzer.up.railway.app/
 
+## Screenshots
+
+### Main Interface
+
+![Main Interface](images/Screenshot1.png)
+
+### Mutation Comparison
+
+![Mutation Comparison](images/Screenshot2.png)
+
 ## Features
 
 - FASTA file upload and direct sequence input
